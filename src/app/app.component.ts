@@ -8,6 +8,12 @@ import {Component, OnInit} from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'dartscore';
 
+  numDarts = [
+    0,
+    1,
+    2
+  ];
+
   gameStarted = false;
 
   numPlayers: number;
@@ -17,7 +23,7 @@ export class AppComponent implements OnInit {
 
   currentWinner = 0;
 
-  nextScores: number[];
+  nextScores: number[][];
 
   scores = null;
   scores2 = null;
@@ -55,13 +61,16 @@ export class AppComponent implements OnInit {
       }
     ]
 
-    for (let i = 0; i < this.numPlayers; i++) {
-      this.playersIndex.push(i);
-      const num: number = null;
-      this.nextScores.push(num);
-      this.scoreTotals[0]['Player ' + (i + 1)] = 0;
+    for (let t = 0; t < 3; t++) {
+      this.nextScores.push([]);
+      this.playersIndex = [];
+      for (let i = 0; i < this.numPlayers; i++) {
+        this.playersIndex.push(i);
+        const num: number = null;
+        this.nextScores[t].push(num);
+        this.scoreTotals[0]['Player ' + (i + 1)] = 0;
+      }
     }
-    console.log('this.playersIndex: ', this.playersIndex);
   }
 
   changeNumPlayers() {
@@ -77,22 +86,36 @@ export class AppComponent implements OnInit {
     const nextItem = {
       Round: 'Round ' + (this.numRounds + 1),
     };
+
     const self = this;
-    for (let i = 0; i < this.nextScores.length; i++) {
+    const fullRound = [];
+    for (let t = 0; t < 3; t++) {
 
-      const item: number = (this.nextScores[i]) ? this.nextScores[i] : 0;
-      nextItem['Player ' + (i + 1)] = item;
-      self.scoreTotals[0]['Player ' + (i + 1)] += item;
-      if (self.scoreTotals[0]['Player ' + (i + 1)] == 300) {
-        this.currentWinner = i + 1;
-        this.isVisible = true;
+      fullRound[t] = [];
+
+      for (let i = 0; i < this.nextScores[t].length; i++) {
+
+        fullRound[t][i] = []
+        const item: number = (this.nextScores[t][i]) ? this.nextScores[t][i] : 0;
+        fullRound[t][i]['Player ' + (i + 1)] = item;
+        self.scoreTotals[0]['Player ' + (i + 1)] += item;
+        if (self.scoreTotals[0]['Player ' + (i + 1)] == 300) {
+          this.currentWinner = i + 1;
+          this.isVisible = true;
+        }
       }
-    };
-    this.scores.push(nextItem);
-    this.nextScores = [];
-    for (i = 0; i < this.numPlayers; i++) {
-      this.nextScores.push(null);
 
+    }
+    this.scores.push(fullRound);
+
+    this.nextScores = [];
+    for (let s = 0; s < 3; s++) {
+      if (this.nextScores.length - 1 < s) {
+        this.nextScores[s] = [];
+      }
+      for (i = 0; i < this.numPlayers; i++) {
+        this.nextScores[s].push(null);
+      }
     }
     this.numRounds += 1;
   }
@@ -109,6 +132,14 @@ export class AppComponent implements OnInit {
     this.isVisible = false;
     this.numPlayersValue = null;
     this.gameStarted = false;
+  }
+
+  logItem(item) {
+    console.log(item);
+  }
+
+  makeInt(val2) {
+    return parseInt(val2, 0);
   }
 
   objectKeys(item) {

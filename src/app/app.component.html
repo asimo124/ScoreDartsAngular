@@ -44,19 +44,26 @@
           </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of scores;" >
-              <td *ngFor="let key of objectKeys(row)">
-                {{ row[key] }}
-              </td>
-            </tr>
-            <tr >
-              <td >
-                Round {{ scores.length  + 1 }}
-              </td>
-              <td *ngFor="let playerNum of playersIndex">
-                <nz-input-number [attr.placeholder]="'Next Player ' + (playerNum + 1) + ' Score'" [(ngModel)]="nextScores[playerNum]" ></nz-input-number>
-              </td>
-            </tr>
+            <ng-container *ngFor="let round of objectKeys(scores);">
+              <tr *ngFor="let dartNum of objectKeys(scores[round]);">
+                <td>Round {{ makeInt(round) + 1 }}</td>
+                <ng-container *ngFor="let row of scores[round][dartNum]" >
+                  <td *ngFor="let key of objectKeys(row)">
+                    {{ row[key] }}
+                  </td>
+                </ng-container>
+              </tr>
+            </ng-container>
+            <ng-container *ngFor="let dart of numDarts">
+              <tr >
+                <td >
+                  Round {{ numRounds + 1 }}
+                </td>
+                <td *ngFor="let playerNum of playersIndex">
+                  <nz-input-number [attr.placeholder]="'Next Player ' + (playerNum + 1) + ' Score'" [(ngModel)]="nextScores[dart][playerNum]" ></nz-input-number>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </nz-table>
         <div style="clear: both; height: 10px"></div>
