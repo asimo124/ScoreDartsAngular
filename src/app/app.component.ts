@@ -94,6 +94,7 @@ export class AppComponent implements OnInit {
       this.nextScores.push(0);
 
     }
+    this.numRounds += 1;
   }
 
   handleCancel() {
