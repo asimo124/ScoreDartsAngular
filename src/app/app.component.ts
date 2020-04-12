@@ -57,7 +57,7 @@ export class AppComponent implements OnInit {
 
     for (let i = 0; i < this.numPlayers; i++) {
       this.playersIndex.push(i);
-      const num: number = 0;
+      const num: number = null;
       this.nextScores.push(num);
       this.scoreTotals[0]['Player ' + (i + 1)] = 0;
     }
@@ -80,7 +80,7 @@ export class AppComponent implements OnInit {
     const self = this;
     for (let i = 0; i < this.nextScores.length; i++) {
 
-      const item: number = this.nextScores[i];
+      const item: number = (this.nextScores[i]) ? this.nextScores[i] : 0;
       nextItem['Player ' + (i + 1)] = item;
       self.scoreTotals[0]['Player ' + (i + 1)] += item;
       if (self.scoreTotals[0]['Player ' + (i + 1)] == 300) {
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
     this.scores.push(nextItem);
     this.nextScores = [];
     for (i = 0; i < this.numPlayers; i++) {
-      this.nextScores.push(0);
+      this.nextScores.push(null);
 
     }
     this.numRounds += 1;
