@@ -16,28 +16,28 @@
     <div class="inner-content" >
 
 <!--      <div style="clear: both; height: 7px;"></div>-->
-      <div nz-row>
-        <div nz-col [nzSpan]="8" ></div>
-        <div nz-col [nzSpan]="8" >
+      <div nz-row nzAlign="bottom" nzType="flex">
+        <div nz-col [nzXs]="{ span: 0 }" [nzSm]="6" [nzMd]="{ span: 6 }" ></div>
+        <div nz-col [nzXs]="{ span: 16 }" [nzSm]="8" [nzMd]="{ span: 8 }" >
           # of Players
           <nz-select [(ngModel)]="numPlayersValue" (ngModelChange)="changeNumPlayers()" nzAllowClear nzPlaceHolder="Choose Number of Players">
             <nz-option nzValue="1" nzLabel="1" ></nz-option>
             <nz-option nzValue="2" nzLabel="2"></nz-option>
             <nz-option nzValue="3" nzLabel="3"></nz-option>
             <nz-option nzValue="4" nzLabel="4"></nz-option>
-            <nz-option nzValue="5" nzLabel="5"></nz-option>
-            <nz-option nzValue="6" nzLabel="6"></nz-option>
           </nz-select>
         </div>
-        <div nz-col [nzSpan]="8" ></div>
+        <div nz-col [nzXs]="{ span: 4 }" [nzSm]="4" [nzMd]="{ span: 4 }" >
+          <button nz-button nzType="danger" (click)="startGame()">New Game</button>
+        </div>
       </div>
       <div style="clear: both; height: 10px;"></div>
 
       <ng-container *ngIf="gameStarted">
-`        <nz-table #basicTable [nzData]="scores2" [nzShowPagination]="false">
+        <nz-table #basicTable [nzData]="scores2" [nzShowPagination]="false">
           <thead>
           <tr>
-            <th>Round</th>
+            <th [style.width]="'25%'">Round</th>
             <th *ngFor="let playerNum of playersIndex">
               Player {{ playerNum + 1 }}
             </th>
@@ -46,7 +46,7 @@
           <tbody>
             <ng-container *ngFor="let round of objectKeys(scores);">
               <tr *ngFor="let dartNum of objectKeys(scores[round]);">
-                <td>Round {{ makeInt(round) + 1 }}</td>
+                <td><span *ngIf="dartNum == 0" >Round {{ makeInt(round) + 1 }}</span></td>
                 <ng-container *ngFor="let row of scores[round][dartNum]" >
                   <td *ngFor="let key of objectKeys(row)">
                     {{ row[key] }}
@@ -54,15 +54,23 @@
                 </ng-container>
               </tr>
             </ng-container>
-            <ng-container *ngFor="let dart of numDarts">
-              <tr >
-                <td >
-                  Round {{ numRounds + 1 }}
-                </td>
-                <td *ngFor="let playerNum of playersIndex">
-                  <nz-input-number [attr.placeholder]="'Next Player ' + (playerNum + 1) + ' Score'" [(ngModel)]="nextScores[dart][playerNum]" ></nz-input-number>
-                </td>
-              </tr>
+            <ng-container *ngIf="gameEnded == false" >
+              <ng-container *ngFor="let dart of numDarts">
+                <tr >
+                  <td >
+                    <span *ngIf="dart == 0">Round {{ numRounds + 1 }}</span>
+                  </td>
+                  <td *ngFor="let playerNum of playersIndex">
+                    <nz-input-number
+                        #scoreText
+                        [style.background-color]="(dartFocus[dart][playerNum] == 1 ? scoreText.focus() : '')"
+                        [attr.placeholder]="'Next Player ' + (playerNum + 1) + ' Score'"
+                        [(ngModel)]="nextScores[dart][playerNum]"
+                        (keydown.enter)="nextDart(dart, playerNum, $event)"
+                        (keydown.shift.enter)="nextDart(dart, playerNum, $event)"></nz-input-number>
+                  </td>
+                </tr>
+              </ng-container>
             </ng-container>
           </tbody>
         </nz-table>
@@ -90,6 +98,13 @@
 
       <nz-modal [(nzVisible)]="isVisible" nzTitle="You Won the Game" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
         Player {{ currentWinner }} has won the game!
+      </nz-modal>
+
+      <nz-modal [(nzVisible)]="bustIsVisible"
+                nzTitle="You Busted"
+                (nzOnCancel)="handleBustCancel()"
+                (nzOnOk)="handleBustOk()">
+        Player {{ currentBuster }} has busted! His score goes back to zero.
       </nz-modal>
 
     </div>
