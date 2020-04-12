@@ -1,21 +1,91 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<nz-layout class="layout"  >
+  <nz-header>
+    <div class="logo"
+         [style.background]="'url(assets/img/dart_icons2.png)'"></div>
+    <div class="logo-text">Let's Play Darts!</div>
+    <!--    <ul nz-menu nzTheme="dark" nzMode="horizontal">-->
+    <!--      <li nz-menu-item>nav 1</li>-->
+    <!--    </ul>-->
+  </nz-header>
+  <nz-content>
+    <!--    <nz-breadcrumb>-->
+    <!--      <nz-breadcrumb-item>Home</nz-breadcrumb-item>-->
+    <!--      <nz-breadcrumb-item>List</nz-breadcrumb-item>-->
+    <!--      <nz-breadcrumb-item>App</nz-breadcrumb-item>-->
+    <!--    </nz-breadcrumb>-->
+    <div class="inner-content" >
 
-<router-outlet></router-outlet>
+<!--      <div style="clear: both; height: 7px;"></div>-->
+      <div nz-row>
+        <div nz-col [nzSpan]="8" ></div>
+        <div nz-col [nzSpan]="8" >
+          # of Players
+          <nz-select [(ngModel)]="numPlayersValue" (ngModelChange)="changeNumPlayers()" nzAllowClear nzPlaceHolder="Choose Number of Players">
+            <nz-option nzValue="1" nzLabel="1" ></nz-option>
+            <nz-option nzValue="2" nzLabel="2"></nz-option>
+            <nz-option nzValue="3" nzLabel="3"></nz-option>
+            <nz-option nzValue="4" nzLabel="4"></nz-option>
+            <nz-option nzValue="5" nzLabel="5"></nz-option>
+            <nz-option nzValue="6" nzLabel="6"></nz-option>
+          </nz-select>
+        </div>
+        <div nz-col [nzSpan]="8" ></div>
+      </div>
+      <div style="clear: both; height: 10px;"></div>
+
+      <ng-container *ngIf="gameStarted">
+`        <nz-table #basicTable [nzData]="scores2" [nzShowPagination]="false">
+          <thead>
+          <tr>
+            <th>Round</th>
+            <th *ngFor="let playerNum of playersIndex">
+              Player {{ playerNum + 1 }}
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of scores;" >
+              <td *ngFor="let key of objectKeys(row)">
+                {{ row[key] }}
+              </td>
+            </tr>
+            <tr >
+              <td >
+                Round {{ scores.length  + 1 }}
+              </td>
+              <td *ngFor="let playerNum of playersIndex">
+                <nz-input-number [attr.placeholder]="'Next Player ' + (playerNum + 1) + ' Score'" [(ngModel)]="nextScores[playerNum]" ></nz-input-number>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <div style="clear: both; height: 10px"></div>
+
+        <button nz-button nzType="primary" (click)="markPlayerScores()">Next Round</button>
+
+        <div style="clear: both; height: 15px"></div>
+
+        <nz-table #totalsTable [nzData]="scoreTotals" [nzShowPagination]="false">
+          <thead>
+          <tr *ngIf="scoreTotals && scoreTotals.length > 0">
+            <th *ngFor="let key of objectKeys(scoreTotals[0]); let i = index" [style.width]="(i == 0) ? '16%' : ''">{{ key }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let row of scoreTotals;">
+            <td *ngFor="let key of objectKeys(row)">
+              {{ row[key] }}
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </ng-container>
+
+      <nz-modal [(nzVisible)]="isVisible" nzTitle="You Won the Game" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+        Player {{ currentWinner }} has won the game!
+      </nz-modal>
+
+    </div>
+  </nz-content>
+
+</nz-layout>
