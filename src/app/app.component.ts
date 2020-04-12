@@ -114,14 +114,24 @@ export class AppComponent implements OnInit {
 
     const self = this;
     const fullRound = [];
+    const playersHaveBusted = []
+    for (let p = 0; p < this.numPlayers; p++) {
+      playersHaveBusted.push(0);
+    }
+
     for (let t = 0; t < 3; t++) {
 
       fullRound[t] = [];
 
       for (let i = 0; i < this.nextScores[t].length; i++) {
 
-        fullRound[t][i] = []
-        const item: number = (this.nextScores[t][i]) ? this.nextScores[t][i] : 0;
+        fullRound[t][i] = [];
+        let item: number = (this.nextScores[t][i]) ? this.nextScores[t][i] : 0;
+
+        if (playersHaveBusted[i] == 1) {
+          item = 0;
+        }
+
         fullRound[t][i]['Player ' + (i + 1)] = item;
         self.scoreTotals[0]['Player ' + (i + 1)] += item;
         if (self.scoreTotals[0]['Player ' + (i + 1)] == 300) {
@@ -130,7 +140,8 @@ export class AppComponent implements OnInit {
         } else if (self.scoreTotals[0]['Player ' + (i + 1)] > 300) {
           this.currentBuster = i + 1;
           this.bustIsVisible = true;
-          self.scoreTotals[0]['Player ' + (i + 1)] = 0;
+          self.scoreTotals[0]['Player ' + (i + 1)] = self.scoreTotals[0]['Player ' + (i + 1)] - 300;
+          playersHaveBusted[i] = 1;
         }
       }
 
