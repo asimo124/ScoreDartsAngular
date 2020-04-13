@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
 
   scores = null;
   scores2 = null;
+  bustedScores = null;
 
   scoreTotals: eachTotal[];
 
@@ -61,6 +62,7 @@ export class AppComponent implements OnInit {
       'Round': 'Round 777',
       'Player 1': 0
     }];
+    this.bustedScores = [];
 
     this.playersIndex = [];
     this.playersIndex2 = [0];
@@ -114,7 +116,8 @@ export class AppComponent implements OnInit {
 
     const self = this;
     const fullRound = [];
-    const playersHaveBusted = []
+    const fullBustedRound = [];
+    const playersHaveBusted = [];
     for (let p = 0; p < this.numPlayers; p++) {
       playersHaveBusted.push(0);
     }
@@ -122,10 +125,12 @@ export class AppComponent implements OnInit {
     for (let t = 0; t < 3; t++) {
 
       fullRound[t] = [];
+      fullBustedRound[t] = [];
 
       for (let i = 0; i < this.nextScores[t].length; i++) {
 
         fullRound[t][i] = [];
+        fullBustedRound[t][i] = [];
         let item: number = (this.nextScores[t][i]) ? this.nextScores[t][i] : 0;
 
         if (playersHaveBusted[i] == 1) {
@@ -133,20 +138,28 @@ export class AppComponent implements OnInit {
         }
 
         fullRound[t][i]['Player ' + (i + 1)] = item;
+
         self.scoreTotals[0]['Player ' + (i + 1)] += item;
         if (self.scoreTotals[0]['Player ' + (i + 1)] == 300) {
           this.currentWinner = i + 1;
           this.isVisible = true;
+          fullBustedRound[t][i]['Player ' + (i + 1)] = 0;
         } else if (self.scoreTotals[0]['Player ' + (i + 1)] > 300) {
           this.currentBuster = i + 1;
           this.bustIsVisible = true;
+          fullBustedRound[t][i]['Player ' + (i + 1)] = 1;
           self.scoreTotals[0]['Player ' + (i + 1)] = self.scoreTotals[0]['Player ' + (i + 1)] - 300;
           playersHaveBusted[i] = 1;
+        } else {
+          fullBustedRound[t][i]['Player ' + (i + 1)] = 0;
         }
       }
 
     }
     this.scores.push(fullRound);
+    this.bustedScores.push(fullBustedRound);
+    console.log('scores at 2: ', this.scores);
+    console.log('bustedScores at 2: ', this.bustedScores);
 
     this.nextScores = [];
     for (let s = 0; s < 3; s++) {
@@ -171,6 +184,18 @@ export class AppComponent implements OnInit {
       this.currentDart = 0;
       if (playerNum < this.numPlayers) {
         this.currentPlayer = playerNum + 1;
+      }
+    }
+    this.setDartFocus();
+  }
+
+  previousDart() {
+    if (this.currentDart > 0) {
+      this.currentDart--;
+    } else {
+      if (this.currentPlayer > 0) {
+        this.currentPlayer--;
+        this.currentDart = 2;
       }
     }
     this.setDartFocus();

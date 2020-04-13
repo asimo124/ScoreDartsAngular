@@ -47,10 +47,12 @@
             <ng-container *ngFor="let round of objectKeys(scores);">
               <tr *ngFor="let dartNum of objectKeys(scores[round]);">
                 <td><span *ngIf="dartNum == 0" >Round {{ makeInt(round) + 1 }}</span></td>
-                <ng-container *ngFor="let row of scores[round][dartNum]" >
-                  <td *ngFor="let key of objectKeys(row)">
-                    {{ row[key] }}
-                  </td>
+                <ng-container *ngFor="let row of scores[round][dartNum]; let i = index" >
+                  <ng-container *ngFor="let key of objectKeys(row)">
+                    <td [className]="(bustedScores[round][dartNum][i][key]) ? 'busted_cell' : ''">
+                      {{ row[key] }}
+                    </td>
+                  </ng-container>
                 </ng-container>
               </tr>
             </ng-container>
@@ -76,7 +78,8 @@
         </nz-table>
         <div style="clear: both; height: 10px"></div>
 
-        <button nz-button nzType="primary" (click)="markPlayerScores()">Next Round</button>
+        <button nz-button nzType="primary" (click)="markPlayerScores()">Next Round</button>&nbsp;
+        <button nz-button nzType="default" (click)="previousDart()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>
 
         <div style="clear: both; height: 15px"></div>
 
