@@ -63,9 +63,10 @@
                     <span *ngIf="dart == 0">Round {{ numRounds + 1 }}</span>
                   </td>
                   <td *ngFor="let playerNum of playersIndex">
+<!--                    [style.background-color]="(dartFocus[dart][playerNum] == 1 ? scoreText.focus() : '')"-->
                     <nz-input-number
                         #scoreText
-                        [style.background-color]="(dartFocus[dart][playerNum] == 1 ? scoreText.focus() : '')"
+
                         [attr.placeholder]="'Next Player ' + (playerNum + 1) + ' Score'"
                         [(ngModel)]="nextScores[dart][playerNum]"
                         (keydown.enter)="nextDart(dart, playerNum, $event)"
@@ -79,7 +80,7 @@
         <div style="clear: both; height: 10px"></div>
 
         <button nz-button nzType="primary" (click)="markPlayerScores()">Next Round</button>&nbsp;
-        <button nz-button nzType="default" (click)="previousDart()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>
+<!--        <button nz-button nzType="default" (click)="previousDart()"><i nz-icon nzType="undo" nzTheme="outline"></i></button>-->
 
         <div style="clear: both; height: 15px"></div>
 

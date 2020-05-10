@@ -178,6 +178,8 @@ export class AppComponent implements OnInit {
 
   nextDart(dartNum, playerNum, event: Event) {
 
+    return;
+
     if (dartNum < 2) {
       this.currentDart = dartNum + 1
     } else {
@@ -190,6 +192,9 @@ export class AppComponent implements OnInit {
   }
 
   previousDart() {
+
+    return;
+
     if (this.currentDart > 0) {
       this.currentDart--;
     } else {
@@ -210,6 +215,9 @@ export class AppComponent implements OnInit {
   }
 
   setDartFocus() {
+
+    return;
+
     for (let t = 0; t < this.dartFocus.length; t++) {
       for (let i = 0; i < this.dartFocus[t].length; i++) {
         if (t == this.currentDart && i == this.currentPlayer) {
